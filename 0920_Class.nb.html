@@ -1755,19 +1755,75 @@ subsetDataTWbank$西元年月&lt;-seq(as.Date(&quot;2001/01/01&quot;),as.Date(&q
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGUuY3N2KHN1YnNldERhdGFUV2JhbmssZmlsZT1cImRhdGEvc3Vic2V0RGF0YVRXYmFuay5jc3ZcIilcblxuYGBgIn0= -->
-<pre class="r"><code>write.csv(subsetDataTWbank,file=&quot;data/subsetDataTWbank.csv&quot;)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3Vic2V0RGF0YVRXYmFua1ssYygzLDQsNSldICU+JSBcbiAgbXV0YXRlX2FsbChhcy5udW1lcmljKSAtPiBcbiAgc3Vic2V0RGF0YVRXYmFua1ssYygzLDQsNSldXG5gYGAifQ== -->
+<pre class="r"><code>subsetDataTWbank[,c(3,4,5)] %&gt;% 
+  mutate_all(as.numeric) -&gt; 
+  subsetDataTWbank[,c(3,4,5)]</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoi54Sh5rOV6ZaL5ZWf5qqU5qGIICdkYXRhL3N1YnNldERhdGFUV2JhbmsuY3N2JyDvvJpObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5RXJyb3IgaW4gZmlsZShmaWxlLCBpZmVsc2UoYXBwZW5kLCBcImFcIiwgXCJ3XCIpKSA6IOeEoeazlemWi+WVn+mAo+e1kFxuIn0= -->
-<pre><code>無法開啟檔案 'data/subsetDataTWbank.csv' ：No such file or directoryError in file(file, ifelse(append, &quot;a&quot;, &quot;w&quot;)) : 無法開啟連結</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<blockquote>
+<p>研究一下write csv這個可以幹嗎? 存檔</p>
+</blockquote>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGUuY3N2KHN1YnNldERhdGFUV2JhbmssIGZpbGU9XCIuL3N1YnNldERhdGFUV2JhbmsuY3N2XCIpXG5gYGAifQ== -->
+<pre class="r"><code>write.csv(subsetDataTWbank, file=&quot;./subsetDataTWbank.csv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div class="section level4">
+<h4>進入繪圖</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVhZC5jc3YoXCIuL3N1YnNldERhdGFUV2JhbmsuY3N2XCIpXG5gYGAifQ== -->
+<pre class="r"><code>read.csv(&quot;./subsetDataTWbank.csv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShnZ3Bsb3QyKVxuc3Vic2V0RGF0YVRXYmFuayAlPiUgZ2dwbG90KGFlcyh4Peilv+WFg+W5tOaciCx5PWDlrprlrZjliKnnjoct5LiA5YCL5pyILeWbuuWummApKSArXG4gIGdlb21fbGluZSgpXG5gYGAifQ== -->
+<pre class="r"><code>library(ggplot2)
+subsetDataTWbank %&gt;% ggplot(aes(x=西元年月,y=`定存利率-一個月-固定`)) +
+  geom_line()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzaG93dGV4dClcbmZvbnRfZmlsZXMoKSAj5om+5Yiw5L2g55qE6Zu76IWm5pyJ5LuA6bq85a2X6auU44CCXG5gYGAifQ== -->
+<pre class="r"><code>library(showtext)
+font_files() #找到你的電腦有什麼字體。</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZm9udF9hZGQoXCJRWXVhblwiLFwiQXJpYWwudHRmXCIpICMg5paw5aKe5a2X6auUXG4jVGhpcyBmdW5jdGlvbiByZWdpc3RlcnMgbmV3IGZvbnQgZmFtaWxpZXMgdGhhdCBjYW4gYmUgdXNlZCBieSBwYWNrYWdlIHNob3d0ZXh0IGFuZCB0aGUgU1dGIGRldmljZSBpbiBwYWNrYWdlIFIyU1dGLiBDdXJyZW50bHkgc3VwcG9ydGVkIGZvcm1hdHMgaW5jbHVkZSBidXQgbm90IGxpbWl0ZWQgdG8gVHJ1ZVR5cGUgZm9udHMoKi50dGYsICoudHRjKSBhbmQgT3BlblR5cGUgZm9udHMoKi5vdGYpLlxuc2hvd3RleHRfYXV0byhlbmFibGU9VFJVRSkgI+WVn+eUqOWtl+mrlFxuYGBgIn0= -->
+<pre class="r"><code>font_add(&quot;QYuan&quot;,&quot;Arial.ttf&quot;) # 新增字體
+#This function registers new font families that can be used by package showtext and the SWF device in package R2SWF. Currently supported formats include but not limited to TrueType fonts(*.ttf, *.ttc) and OpenType fonts(*.otf).
+showtext_auto(enable=TRUE) #啟用字體</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI+acgOe1guWxpOeWilxuc3Vic2V0RGF0YVRXYmFuayAlPiUgZ2dwbG90KGFlcyh4Peilv+WFg+W5tOaciCx5PWDlrprlrZjliKnnjoct5LiA5YCL5pyILeWbuuWummApKStcbiAgZ2VvbV9saW5lKCkrXG4gIHRoZW1lKHRleHQ9ZWxlbWVudF90ZXh0KHNpemU9MTAsICBmYW1pbHk9XCJRWXVhblwiKSkrXG4gIHRoZW1lX2NsYXNzaWMoKStcbiAgbGFicyh4PVwi6KW/5YWD5bm05pyIXCIseT1cIuWIqeeOh++8miVcIilcbmBgYCJ9 -->
+<pre class="r"><code>#最終層疊
+subsetDataTWbank %&gt;% ggplot(aes(x=西元年月,y=`定存利率-一個月-固定`))+
+  geom_line()+
+  theme(text=element_text(size=10,  family=&quot;QYuan&quot;))+
+  theme_classic()+
+  labs(x=&quot;西元年月&quot;,y=&quot;利率：%&quot;)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiMDkyMF9DbGFzcyIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKYGBge3J9CmxpYnJhcnkocmVhZHIpCmBgYAoKYGBge3J9CkludGVyZXN0UmF0ZURhdGEgPC0gQTEzUmF0ZQpJbnRlcmVzdFJhdGVEYXRhCmBgYAoKIyMjIyDntpPmv5/oqI7oq5YKCumKgOihjOaOm+eJjOWIqeeOh+eCuuW5tOWIqeeOh+OAggoK5pyI5Zu65a6a5Yip546HNC4z77yM5a2YMTAw5YWD77yM5LiA5YCL5pyI5b6M5pyD5ou/5YiwMTAwKjQuMyUvMTLjgIIKCumHjem7nuaYr+WcqOavlOi8g+efreacn+OAgemVt+acn+eahOWIqeeOh+e1kOani+eLgOazge+8jOWPr+S7peiqquWHuuS6uuawkeWwjeaWvOeVtuS4i+OAgeefreacn+acquS+huOAgemVt+acn+acquS+hueahOmgkOacn+eLgOazgeOAggoKCmBgYHtyfQpsaWJyYXJ5KGRwbHlyKQpzdWJzZXREYXRhIDwtIEludGVyZXN0UmF0ZURhdGEgJT4lCiAgc2VsZWN0KOmKgOihjCwKICAgICAgICAgICDlubTmnIgsCiAgICAgICAgICAgYOWumuWtmOWIqeeOhy3kuIDlgIvmnIgt5Zu65a6aYCwKICAgICAgICAgICBg5a6a5a2Y5Yip546HLeS6jOW5tOacny3lm7rlrppgLAogICAgICAgICAgIGDlrprlrZjliKnnjoct5LiJ5bm05pyfLeWbuuWummApCiNg5a6a5a2Y5Yip546HLeS4gOWAi+aciC3lm7rlrppg77yM6KaB5pyJYGDvvIzmiY3mnIPooajpgZTmiJDmuJvomZ/pgYvnrpfjgIIKYGBgCgpgYGB7cn0Kc3Vic2V0RGF0YQpzdWJzZXREYXRhVFdiYW5rIDwtIHN1YnNldERhdGEgJT4lCiAgZmlsdGVyKOmKgOihjD09IuiHuueBo+mKgOihjCIpCmBgYAoKVGltZTogZnJlcXVlbmN5IGFuZCBzcGFuICjph53lsI3mmYLplpPvvIzpnIDopoHnibnliKXot5/pm7vohaZwYXJzZe+8jOiprumHi++8jOS4jeWPr+S7peeUqOWtl+S4sikKYGBge3J9CmxpYnJhcnkoZHBseXIpCgoj5oiR5omT566X5YaN5Yqg5LiA5YCL6K6K5pW444CCCiNzZXEo6LW35pa8LOi/hOaWvC4uLikg5piv5LiA5YCL6JCs55So5pW45YiX55Si55Sf5Zmo77yM6YKj55SoYXMuRGF0ZeS+huihqOmBlO+8iOaXpeacn++8ieeahOeJueizquOAggoj6K6K5pW46aGe5Z6L54K6ZGF0ZQpzdWJzZXREYXRhVFdiYW5rJOilv+WFg+W5tOaciDwtc2VxKGFzLkRhdGUoIjIwMDEvMDEvMDEiKSxhcy5EYXRlKCIyMDE4LzA4LzAxIiksIm1vbnRocyIpIAoj5a2j77yMcXVhcnRlcnMKYGBgCgpgYGB7cn0Kc3Vic2V0RGF0YVRXYmFua1ssYygzLDQsNSldICU+JSAKICBtdXRhdGVfYWxsKGFzLm51bWVyaWMpIC0+IAogIHN1YnNldERhdGFUV2JhbmtbLGMoMyw0LDUpXQoKd3JpdGUuY3N2KHN1YnNldERhdGFUV2JhbmssZmlsZT0iZGF0YS9zdWJzZXREYXRhVFdiYW5rLmNzdiIpCiAgCiAgCmBgYAoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiMDkyMF9DbGFzcyIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKYGBge3J9CmxpYnJhcnkocmVhZHIpCmBgYAoKYGBge3J9CkludGVyZXN0UmF0ZURhdGEgPC0gQTEzUmF0ZQpJbnRlcmVzdFJhdGVEYXRhCmBgYAoKIyMjIyDntpPmv5/oqI7oq5YKCumKgOihjOaOm+eJjOWIqeeOh+eCuuW5tOWIqeeOh+OAggoK5pyI5Zu65a6a5Yip546HNC4z77yM5a2YMTAw5YWD77yM5LiA5YCL5pyI5b6M5pyD5ou/5YiwMTAwKjQuMyUvMTLjgIIKCumHjem7nuaYr+WcqOavlOi8g+efreacn+OAgemVt+acn+eahOWIqeeOh+e1kOani+eLgOazge+8jOWPr+S7peiqquWHuuS6uuawkeWwjeaWvOeVtuS4i+OAgeefreacn+acquS+huOAgemVt+acn+acquS+hueahOmgkOacn+eLgOazgeOAggoKCmBgYHtyfQpsaWJyYXJ5KGRwbHlyKQpzdWJzZXREYXRhIDwtIEludGVyZXN0UmF0ZURhdGEgJT4lCiAgc2VsZWN0KOmKgOihjCwKICAgICAgICAgICDlubTmnIgsCiAgICAgICAgICAgYOWumuWtmOWIqeeOhy3kuIDlgIvmnIgt5Zu65a6aYCwKICAgICAgICAgICBg5a6a5a2Y5Yip546HLeS6jOW5tOacny3lm7rlrppgLAogICAgICAgICAgIGDlrprlrZjliKnnjoct5LiJ5bm05pyfLeWbuuWummApCiNg5a6a5a2Y5Yip546HLeS4gOWAi+aciC3lm7rlrppg77yM6KaB5pyJYGDvvIzmiY3mnIPooajpgZTmiJDmuJvomZ/pgYvnrpfjgIIKYGBgCgpgYGB7cn0Kc3Vic2V0RGF0YQpzdWJzZXREYXRhVFdiYW5rIDwtIHN1YnNldERhdGEgJT4lCiAgZmlsdGVyKOmKgOihjD09IuiHuueBo+mKgOihjCIpCmBgYAoKVGltZTogZnJlcXVlbmN5IGFuZCBzcGFuICjph53lsI3mmYLplpPvvIzpnIDopoHnibnliKXot5/pm7vohaZwYXJzZe+8jOiprumHi++8jOS4jeWPr+S7peeUqOWtl+S4sikKYGBge3J9CmxpYnJhcnkoZHBseXIpCgoj5oiR5omT566X5YaN5Yqg5LiA5YCL6K6K5pW444CCCiNzZXEo6LW35pa8LOi/hOaWvC4uLikg5piv5LiA5YCL6JCs55So5pW45YiX55Si55Sf5Zmo77yM6YKj55SoYXMuRGF0ZeS+huihqOmBlO+8iOaXpeacn++8ieeahOeJueizquOAggoj6K6K5pW46aGe5Z6L54K6ZGF0ZQpzdWJzZXREYXRhVFdiYW5rJOilv+WFg+W5tOaciDwtc2VxKGFzLkRhdGUoIjIwMDEvMDEvMDEiKSxhcy5EYXRlKCIyMDE4LzA4LzAxIiksIm1vbnRocyIpIAoj5a2j77yMcXVhcnRlcnMKYGBgCgpgYGB7cn0Kc3Vic2V0RGF0YVRXYmFua1ssYygzLDQsNSldICU+JSAKICBtdXRhdGVfYWxsKGFzLm51bWVyaWMpIC0+IAogIHN1YnNldERhdGFUV2JhbmtbLGMoMyw0LDUpXQpgYGAKCj4g56CU56m25LiA5LiLd3JpdGUgY3N26YCZ5YCL5Y+v5Lul5bm55ZeOPyDlrZjmqpQKCmBgYHtyfQp3cml0ZS5jc3Yoc3Vic2V0RGF0YVRXYmFuaywgZmlsZT0iLi9zdWJzZXREYXRhVFdiYW5rLmNzdiIpCmBgYAoKIyMjIyDpgLLlhaXnuarlnJYKCmBgYHtyfQpyZWFkLmNzdigiLi9zdWJzZXREYXRhVFdiYW5rLmNzdiIpCmBgYAoKYGBge3J9CmxpYnJhcnkoZ2dwbG90MikKc3Vic2V0RGF0YVRXYmFuayAlPiUgZ2dwbG90KGFlcyh4Peilv+WFg+W5tOaciCx5PWDlrprlrZjliKnnjoct5LiA5YCL5pyILeWbuuWummApKSArCiAgZ2VvbV9saW5lKCkKYGBgCgpgYGB7cn0KbGlicmFyeShzaG93dGV4dCkKZm9udF9maWxlcygpICPmib7liLDkvaDnmoTpm7vohabmnInku4DpurzlrZfpq5TjgIIKYGBgCgpgYGB7cn0KZm9udF9hZGQoIlFZdWFuIiwiQXJpYWwudHRmIikgIyDmlrDlop7lrZfpq5QKCiNUaGlzIGZ1bmN0aW9uIHJlZ2lzdGVycyBuZXcgZm9udCBmYW1pbGllcyB0aGF0IGNhbiBiZSB1c2VkIGJ5IHBhY2thZ2Ugc2hvd3RleHQgYW5kIHRoZSBTV0YgZGV2aWNlIGluIHBhY2thZ2UgUjJTV0YuIEN1cnJlbnRseSBzdXBwb3J0ZWQgZm9ybWF0cyBpbmNsdWRlIGJ1dCBub3QgbGltaXRlZCB0byBUcnVlVHlwZSBmb250cygqLnR0ZiwgKi50dGMpIGFuZCBPcGVuVHlwZSBmb250cygqLm90ZikuCgpzaG93dGV4dF9hdXRvKGVuYWJsZT1UUlVFKSAj5ZWf55So5a2X6auUCmBgYAoKYGBge3J9CiPmnIDntYLlsaTnlooKc3Vic2V0RGF0YVRXYmFuayAlPiUgZ2dwbG90KGFlcyh4Peilv+WFg+W5tOaciCx5PWDlrprlrZjliKnnjoct5LiA5YCL5pyILeWbuuWummApKSsKICBnZW9tX2xpbmUoKSsKICB0aGVtZSh0ZXh0PWVsZW1lbnRfdGV4dChzaXplPTEwLCAgZmFtaWx5PSJRWXVhbiIpKSsKICB0aGVtZV9jbGFzc2ljKCkrCiAgbGFicyh4PSLopb/lhYPlubTmnIgiLHk9IuWIqeeOh++8miUiKQpgYGAKCg==</div>
 
 
 

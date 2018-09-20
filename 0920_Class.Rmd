@@ -53,9 +53,45 @@ subsetDataTWbank$西元年月<-seq(as.Date("2001/01/01"),as.Date("2018/08/01"),"
 subsetDataTWbank[,c(3,4,5)] %>% 
   mutate_all(as.numeric) -> 
   subsetDataTWbank[,c(3,4,5)]
+```
 
-write.csv(subsetDataTWbank,file="data/subsetDataTWbank.csv")
-  
-  
+> 研究一下write csv這個可以幹嗎? 存檔
+
+```{r}
+write.csv(subsetDataTWbank, file="./subsetDataTWbank.csv")
+```
+
+#### 進入繪圖
+
+```{r}
+read.csv("./subsetDataTWbank.csv")
+```
+
+```{r}
+library(ggplot2)
+subsetDataTWbank %>% ggplot(aes(x=西元年月,y=`定存利率-一個月-固定`)) +
+  geom_line()
+```
+
+```{r}
+library(showtext)
+font_files() #找到你的電腦有什麼字體。
+```
+
+```{r}
+font_add("QYuan","Arial.ttf") # 新增字體
+
+#This function registers new font families that can be used by package showtext and the SWF device in package R2SWF. Currently supported formats include but not limited to TrueType fonts(*.ttf, *.ttc) and OpenType fonts(*.otf).
+
+showtext_auto(enable=TRUE) #啟用字體
+```
+
+```{r}
+#最終層疊
+subsetDataTWbank %>% ggplot(aes(x=西元年月,y=`定存利率-一個月-固定`))+
+  geom_line()+
+  theme(text=element_text(size=10,  family="QYuan"))+
+  theme_classic()+
+  labs(x="西元年月",y="利率：%")
 ```
 
