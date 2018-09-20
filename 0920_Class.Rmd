@@ -1,0 +1,61 @@
+---
+title: "0920_Class"
+output: html_notebook
+---
+
+```{r}
+library(readr)
+```
+
+```{r}
+InterestRateData <- A13Rate
+InterestRateData
+```
+
+#### 經濟討論
+
+銀行掛牌利率為年利率。
+
+月固定利率4.3，存100元，一個月後會拿到100*4.3%/12。
+
+重點是在比較短期、長期的利率結構狀況，可以說出人民對於當下、短期未來、長期未來的預期狀況。
+
+
+```{r}
+library(dplyr)
+subsetData <- InterestRateData %>%
+  select(銀行,
+           年月,
+           `定存利率-一個月-固定`,
+           `定存利率-二年期-固定`,
+           `定存利率-三年期-固定`)
+#`定存利率-一個月-固定`，要有``，才會表達成減號運算。
+```
+
+```{r}
+subsetData
+subsetDataTWbank <- subsetData %>%
+  filter(銀行=="臺灣銀行")
+```
+
+Time: frequency and span (針對時間，需要特別跟電腦parse，詮釋，不可以用字串)
+```{r}
+library(dplyr)
+
+#我打算再加一個變數。
+#seq(起於,迄於...) 是一個萬用數列產生器，那用as.Date來表達（日期）的特質。
+#變數類型為date
+subsetDataTWbank$西元年月<-seq(as.Date("2001/01/01"),as.Date("2018/08/01"),"months") 
+#季，quarters
+```
+
+```{r}
+subsetDataTWbank[,c(3,4,5)] %>% 
+  mutate_all(as.numeric) -> 
+  subsetDataTWbank[,c(3,4,5)]
+
+write.csv(subsetDataTWbank,file="data/subsetDataTWbank.csv")
+  
+  
+```
+
