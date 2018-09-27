@@ -3,3 +3,153 @@ title: "0927_Class"
 output: html_notebook
 ---
 
+```{r}
+library(readr)
+InterestRateData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/InterestRateData.csv")
+subsetDataTWbank <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/subsetDataTWbank.csv")
+```
+
+```{r}
+library(showtext)
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE)
+```
+
+```{r}
+library(dplyr)
+subsetData <- InterestRateData %>%
+  select(銀行,
+           年月,
+           `定存利率-一個月-固定`,
+           `定存利率-二年期-固定`,
+           `定存利率-三年期-固定`)
+
+subsetData
+```
+
+```{r}
+TWdate2West <- function(TWdate){
+  library(stringr)
+  library(lubridate)
+  westDate <- str_c("1",TWdate,"/01") # 等於加了1000年及01日
+  westDate <- ymd(westDate)  # recursive definition
+  westDate <- westDate + years(911)
+}
+
+subsetData$西元年月 <- TWdate2West(subsetData$年月)
+subsetData
+```
+
+```{r}
+# 原始資料在每一家銀行開頭又有變數名稱
+subsetData %>% filter(!is.na(西元年月)) -> subsetData
+subsetData
+```
+
+```{r}
+subsetData[,3:5] %>% mutate_all(as.numeric) -> subsetData[,3:5]
+```
+
+```{r}
+library(ggplot2)
+subsetData %>% filter(銀行=="臺灣銀行") -> subsetDataTWbank
+subsetDataTWbank %>%
+  ggplot(aes(x=西元年月,y=`定存利率-一個月-固定`)) 
+```
+
+```{r}
+#.Last.value代表最近一次程式執行後電腦畫面的物件。
+subsetDataTWbank_canvas <- .Last.value
+```
+
+```{r}
+subsetData %>%
+  ggplot(aes(x=西元年月,y=`定存利率-一個月-固定`))
+```
+
+```{r}
+#.Last.value代表最近一次程式執行後電腦畫面的物件。
+subsetData_canvas <- .Last.value
+```
+
+### 五家銀行畫布
+```{r}
+subsetDataTWbank_canvas+geom_line()
+```
+
+### 台灣銀行畫布
+```{r}
+subsetData_canvas+geom_line()
+```
+
+
+### layers
+```{r}
+subsetDataTWbank_canvas+
+  geom_line()+
+  geom_point()
+```
+
+
+```{r}
+#進行台灣銀行以及第一銀行的比較圖。
+#寫法一
+firstBank<-subsetData %>% filter(銀行=="第一銀行")
+subsetDataTWbank_canvas+
+  geom_line()+
+  geom_line(data=firstBank,color='red') #這邊一定要寫data=firstBank，不然電腦會以為mapping = firstbank
+```
+
+```{r}
+#進行台灣銀行以及第一銀行的比較圖。
+#寫法一
+subsetDataTWbank_canvas+
+  geom_line()+
+  geom_line(data=(subsetData %>% filter(銀行=="第一銀行")),
+    color='red')
+```
+
+### 在臺灣銀行線圖點上第一銀行的資料點(課堂練習)
+```{r}
+subsetDataTWbank_canvas+
+  geom_line()+
+  geom_point(data=(subsetData %>% filter(銀行=="第一銀行")),
+    color='red')
+```
+
+### aesthetics
+```{r}
+#geom_line size & linetype
+subsetDataTWbank_canvas+
+  geom_line(size=0.8, linetype="dotted")
+```
+
+```{r}
+#linetype with hex string which will create more flexitation.
+
+#用數字來定義一個完整線段的形式。 “33”：3個點距的「線」，接3個點路的「空白」
+subsetDataTWbank_canvas+
+  geom_line(linetype="33")
+```
+
+```{r}
+subsetDataTWbank_canvas+
+  geom_line(linetype='2451')
+```
+
+### aesthetics to grouping 
+```{r}
+subsetData_canvas+
+  geom_line()
+```
+
+```{r}
+subsetData_canvas+
+  geom_line(aes(linetype=銀行))
+```
+
+```{r}
+subsetData_canvas+
+  geom_line(aes(color=銀行))
+```
+
