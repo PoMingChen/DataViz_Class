@@ -95,3 +95,36 @@ subsetDataTWbank %>% ggplot(aes(x=西元年月,y=`定存利率-一個月-固定`
   labs(x="西元年月",y="利率：%")
 ```
 
+### 寫作業
+
+> 查詢如何直接drop特定一行
+> 查詢如何為何會有X X1_1的產生
+> mac投影解析度設定
+```{r 引入資料}
+read.csv("./hw/bop_aq.csv") -> HW1data
+HW1data
+```
+
+```{r}
+HW1data %>% select(c(1,2)) -> HW1dataSheet
+HW1dataSheet %>% mutate(季資料 = HW1dataSheet$X) -> HW1dataSheet
+
+HW1dataSheet %>% select(季資料,A...經常帳,everything()) -> HW1dataSheet
+#經常帳總額。
+#subsetDataTWbank$西元年月<-seq(as.Date("2001/01/01"),as.Date("2018/08/01"),"months") 
+
+HW1dataSheet
+HW1dataSheet$季資料 <- seq(as.Date("2014/07/01"),as.Date("2018/04/01"),"quarters")
+
+HW1dataSheet[-c(3)]->HW1dataSheet
+HW1dataSheet
+
+```
+
+```{r}
+HW1dataSheet %>% ggplot(aes(x=季資料,y=A...經常帳)) +       geom_line()+
+  theme(text=element_text(size=10,  family="QYuan"))+
+  theme_classic()+
+  labs(x="西元年月",y="經常帳：百萬美元") 
+```
+
