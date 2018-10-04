@@ -1,0 +1,53 @@
+---
+title: "1004_Class"
+author: "PoMingChen"
+date: "2018/10/4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+bopData <- read_csv("https://quality.data.gov.tw/dq_download_csv.php?nid=10823&md5_url=e09fd24fad95da6d6cd67b2d05d3e878")
+```
+
+```{r}
+library(dplyr)
+bopData %>%
+  rename(年季=`0`) -> bopData
+```
+
+```{r}
+bopData %>%
+  select(
+    年季,
+    `A.  經常帳`, 
+    `B.  資本帳 1`,
+    `C.  金融帳 1`,
+    `D.  誤差與遺漏淨額`,
+    `E.  準備與相關項目`) -> partialBop
+```
+
+```{r}
+library(lubridate)
+partialBop$年季 %>% yq() ->
+  partialBop$年季
+```
+
+```{r}
+partialBop
+```
+
+```{r}
+partialBop %>% ggplot(aes(x=年季,y=`A.  經常帳`)) + geom_line() 
+```
+
+```{r}
+partialBop %>% ggplot(aes(x=年季)) + 
+  geom_line(aes(y=`A.  經常帳`)) + 
+  geom_line(aes(y=`C.  金融帳 1`), linetype = "33")
+```
+
