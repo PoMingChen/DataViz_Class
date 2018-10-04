@@ -100,6 +100,7 @@ subsetDataTWbank %>% ggplot(aes(x=西元年月,y=`定存利率-一個月-固定`
 > 查詢如何直接drop特定一行
 > 查詢如何為何會有X X1_1的產生
 > mac投影解析度設定
+
 ```{r 引入資料}
 read.csv("./hw/bop_aq.csv") -> HW1data
 HW1data
@@ -122,6 +123,7 @@ HW1dataSheet
 ```
 
 ```{r}
+library(dplyr)
 HW1dataSheet %>% ggplot(aes(x=季資料,y=A...經常帳)) +       geom_line()+
   theme(text=element_text(size=10,  family="QYuan"))+
   theme_classic()+

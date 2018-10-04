@@ -150,6 +150,8 @@ subsetData_canvas+
 
 ```{r}
 subsetData_canvas+
-  geom_line(aes(color=銀行))
+  geom_line(aes(color=銀行)) +
+  theme(text=element_text(size=10,  family="QYuan"))+
+  theme_classic()
 ```
 
