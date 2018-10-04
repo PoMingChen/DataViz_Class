@@ -79,3 +79,37 @@ partialBopNew %>% ggplot(aes(x=年季, y=值)) +
 partialBopNew
 ```
 
+### scale
+```{r}
+library(ggplot2)
+library(dplyr)
+library(showtext)
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE)
+theme_set(theme_classic())
+```
+
+```{r}
+mpg %>% ggplot(aes(x=cty,y=hwy,color=class))+
+  geom_point()
+```
+
+```{r}
+mpg %>% ggplot(aes(x=cty,y=hwy,color=class))+
+  geom_point() -> f1
+
+f1 + scale_color_manual(values=c("red","blue","green","tomato","tomato","#e86b97","blue"))
+```
+
+### scale_brewer(主要是配間斷變數，連續變數主要是配distiller)(手動改法，是discrete，continuous)(brewer，distiller)
+```{r}
+f1 + scale_color_brewer(type = "qual")
+
+# sequential（強調順序）（遞增嚴重感）seq
+# diverging （強調離異）(對立感) div
+# 前面兩者會比較需要資料本身是有比較意義的。
+# and qualitative（強調不同屬性）qual
+
+#distiller: 利用brewer再去連續平滑色度變化
+```
+
