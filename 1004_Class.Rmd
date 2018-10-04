@@ -51,3 +51,31 @@ partialBop %>% ggplot(aes(x=年季)) +
   geom_line(aes(y=`C.  金融帳 1`), linetype = "33")
 ```
 
+#### 用gather轉換資料形式，會比較可以讓x y 軸的局部sample設定較方便。
+```{r}
+library(tidyr)
+partialBop
+partialBop %>% gather(項目,值,-年季) -> partialBopNew
+#-年季，來先忽略他，但是這邊是需要寫在最後面的
+partialBopNew
+```
+
+```{r}
+partialBopNew %>% filter(項目=="A.  經常帳") -> CAdata
+partialBopNew %>% filter(項目=="C.  金融帳 1") -> FAdata
+CAdata %>% ggplot(aes(x=年季, y=值)) + geom_line() -> CAfig
+```
+
+```{r}
+CAfig + geom_line(data = FAdata, linetype = "longdash")
+```
+
+```{r}
+partialBopNew %>% ggplot(aes(x=年季, y=值)) + 
+  geom_line(aes(color = 項目, linetype = 項目))
+```
+
+```{r}
+partialBopNew
+```
+
