@@ -1,0 +1,133 @@
+---
+title: ''
+author: "PoMingChen"
+date: "2018/10/18"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(readr)
+library(lubridate)
+library(stringr)
+dataCPI <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/PR0101A2Mc.csv", 
+    locale = locale(encoding = "BIG5"), skip = 3)
+
+## 改變數名稱
+dataCPI %>% 
+  dplyr::rename(
+    年月=X1,
+    CPI=原始值
+  ) -> dataCPI
+
+# 移除「有NA」的row
+dataCPI %>% na.omit() -> dataCPI
+
+## 調整class
+dataCPI$年月 %>% str_c("/01") %>% #擴增為YMD表示
+  ymd() -> dataCPI$年月
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(showtext)
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE)
+theme_set(theme_classic())
+```
+
+```{r}
+dataCPI %>% ggplot()+
+  geom_line(aes(x=年月,y=CPI)) -> basePlot
+basePlot
+```
+
+設定X軸的上下界
+```{r}
+basePlot+
+  scale_x_date(limits=c(ymd("2003-01-01"),NA))
+```
+
+設定Y軸的上下界
+```{r}
+basePlot+
+  scale_x_date(limits=c(ymd("2003-01-01"),NA))+
+  scale_y_continuous(limits=c(80,NA)) 
+```
+
+設定新基期，作為畫圖基準。
+```{r}
+dataCPI %>% filter(年月==ymd("2003-01-01")) %>% 
+  select(CPI) -> CPI2003M1
+dataCPI %>% 
+  mutate(CPI=CPI/CPI2003M1$CPI*100) -> dataCPI2
+```
+
+利用新基期，畫新的圖
+```{r}
+dataCPI2 %>% ggplot()+
+  geom_line(aes(x=年月,y=CPI)) -> basePlot2
+basePlot2
+```
+
+### breaks，軸標標示點
+
+basePlot2內含y下限
+```{r}
+basePlot2 +
+  scale_y_continuous(limits=c(95,NA)) -> basePlot2
+basePlot2
+```
+
+basePlot2增加x下限
+```{r}
+basePlot2 +
+  scale_x_date(limits=c(ymd("2003-01-01"),NA))
+```
+
+```{r}
+breakDates <- c("2003-01-01",
+                "2005-01-01","2010-01-01","2015-01-01",
+                "2018-01-01")
+breakDates %>% ymd() -> breakDates
+basePlot2 +
+  scale_x_date(limits=c(ymd("2003-01-01"),NA),
+               breaks = breakDates)
+```
+
+```{r}
+basePlot2 +
+  scale_x_date(limits=c(ymd("2003-01-01"),NA),
+               breaks = breakDates,
+               labels = function(x) year(x))
+```
+
+### Axis
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(showtext)
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE)
+theme_set(theme_classic())
+```
+
+```{r}
+p1 <- ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() 
+p1
+```
+
+新增gird，格線。
+```{r}
+p1+
+  theme(panel.grid.major.y=element_line())->p1
+p1
+```
+
+```{r}
+
+```
+
