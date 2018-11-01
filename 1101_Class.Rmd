@@ -1,0 +1,12 @@
+---
+title: "11/1_Class"
+author: "PoMingChen"
+date: "2018/11/1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
