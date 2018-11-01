@@ -1,0 +1,90 @@
+---
+title: "10/25_Class"
+author: "PoMingChen"
+date: "2018/10/25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(showtext)
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE)
+theme_set(theme_classic())
+```
+
+```{r}
+p1 <- ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() + theme_classic()
+p1
+```
+
+### 練習改變主要橫軸線的視覺感。
+```{r}
+p1+
+  theme(panel.grid.major.y=element_line(color = "#adadad", size = 0.1))->p2
+p2
+```
+
+### 怎麼把y軸線拿掉
+```{r}
+p2 + theme(axis.line.y = element_line(size = 0))
+```
+
+```{r}
+p2 + theme(axis.tick.y = element_blank(), element_line(size = 0))
+```
+
+```{r}
+p1 + theme(axis.text = element_text(colour = "blue"), axis.text.x = element_text(hjust=1))
+```
+
+```{r}
+mtcars2 <- mtcars[1:15, ]
+mtcars2$name <- row.names(mtcars2)
+mtcars2
+
+ggplot(mtcars2, aes(x = name, y = mpg, fill = name)) + 
+  geom_bar(stat = 'identity', position = "identity") +
+  guides(fill = FALSE) + 
+  theme(axis.text.x = element_text(angle = 90, vjust=0.45, hjust=1)) 
+# guides，是指關掉圖例。
+```
+
+```{r}
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+
+
+
+# 引入資料
+exData <- read_csv("https://quality.data.gov.tw/dq_download_csv.php?nid=6563&md5_url=9f65bdb6752389dc713acc27e93c1c38")
+
+exData$期間
+
+# 處理時間
+exData$期間 %>% paste0("-01") %>% ymd() -> exData$期間
+
+# 處理資料結構
+exData %>% select(期間, "歐元USD/EUR","韓元KRW/USD","人民幣CNY/USD", "日圓JPY/USD", "新台幣NTD/USD") -> exData2
+exData2 %>% gather(幣別, 匯率, -期間) -> exData2
+
+# 處理變數class
+exData2$幣別 %>% as.factor() -> exData2$幣別
+exData2$匯率 %>% as.numeric() -> exData2$匯率
+
+# 以2017年1月為基期
+exData2 %>% group_by(幣別) %>%
+  mutate(匯率=匯率/匯率[期間==ymd("2017-01-01")]*100) %>% 
+  ungroup() ->
+  exData3
+```
+
+
