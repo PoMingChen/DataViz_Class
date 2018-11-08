@@ -1,0 +1,239 @@
+---
+title: "長條圖"
+author: "PoMingChen"
+date: "2018/11/8"
+output: html_document
+---
+
+> 長條圖，不等於直方圖
+> 長條圖，就是有“面積比較”的心理，然後記得留意呈現方式（堆疊、分開、百分比堆疊），以及選色
+
+```{r}
+library(showtext)
+# font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+
+library(stringr)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(readr)
+theme_set(theme_classic())
+```
+
+
+```{r}
+startSalaryTopCat<- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/startSalaryTopCat.csv")
+
+startSalaryTopCat %>% filter(
+  str_detect(大職業別,"部門")
+) -> dataTwoSectors
+```
+
+```{r}
+dataTwoSectors %>% ggplot(aes(x=大職業別))+
+  geom_col(aes(y=`經常性薪資-薪資`))->p1
+p1
+```
+
+```{r}
+classSample<- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/classSample.csv")
+classSample %>%
+  mutate_at(
+    vars(-c(3,4)),
+    funs(
+      as.factor(.)
+    )
+  ) -> classSample
+```
+
+```{r}
+classSample %>% 
+  filter(入學年=="107") ->
+  freshmen
+
+freshmen %>% 
+  ggplot(aes(x=性別))+
+  geom_bar()->p2
+
+p2
+```
+
+```{r}
+#若沒有要加，就用NULL
+p1+
+  labs(x="職業別",y="月薪") -> p1
+p1
+```
+
+```{r}
+p2+
+  labs(x=NULL,y=NULL)-> p2
+p2
+```
+
+```{r}
+startSalaryTopCat$部門<-"服務業部門"
+startSalaryTopCat$部門[2:7]<-"工業部門"
+startSalarySecCat <- startSalaryTopCat[-c(1,2,8),]
+```
+
+```{r}
+startSalarySecCat %>% ggplot(aes(x=大職業別))+
+  geom_col(aes(y=`經常性薪資-薪資`,fill=部門))+
+  theme(
+    axis.text.x=
+      element_text(
+        angle=90,
+        hjust=1,
+        vjust=0.5)) -> p3
+p3
+```
+
+#### 大一男女性比例用不同顏色表示。(課堂上練習)
+```{r}
+classSample %>% 
+  filter(入學年=="107") ->
+  freshmen
+
+freshmen %>% 
+  ggplot(aes(x=性別))+
+  geom_bar(aes(fill=性別))->p2
+
+p2
+```
+
+```{r}
+freshmen %>%
+  mutate(有課外活動=(本學期目前已參加之課外活動!="無")) ->
+  freshmen2
+
+freshmen2
+
+freshmen2 %>%
+  ggplot(aes(x=有課外活動))+
+  geom_bar(aes(fill=性別)) 
+```
+
+```{r}
+freshmen2 %>%
+  ggplot(aes(x=有課外活動))+
+  geom_bar(aes(fill=性別),
+           position = "dodge") 
+```
+
+```{r}
+freshmen2 %>%
+  ggplot(aes(x=有課外活動))+
+  geom_bar(aes(fill=性別),
+           position = "fill",
+           stat 
+           )+
+  scale_fill_brewer(type="qual")
+```
+
+```{r}
+startSalarySecCat$`經常性薪資-薪資` %>% 
+  sort(., decreasing=T,
+       index.return=T) -> sortOut
+sortOut
+xlim <- startSalarySecCat$大職業別[sortOut$ix]
+
+p3+scale_x_discrete(
+  limits=xlim
+)->p4
+p4
+```
+
+```{r}
+freshmen2 %>% 
+  mutate(性別=ordered(性別,
+                      levels=c("男","女"))) -> freshmen3
+#ordered轉成（可排序類別）
+
+freshmen3
+
+freshmen3 %>%
+  ggplot(aes(x=有課外活動))+
+  geom_bar(aes(fill=性別),
+           position = "dodge",
+           stat 
+           )+
+  scale_fill_brewer(type="qual")
+```
+
+```{r}
+freshmen2 %>%
+  # 依**有課外活動**分群，群內的每筆權重為 1/群內人數，count基本上是1，但是weight可以改變每一筆賦予他的權重，讓你想要count出來的值更有意義。
+  group_by(有課外活動) %>% 
+  mutate(權重=1/n()) -> freshmen4 # n(): 計算群內樣本數
+
+freshmen4 %>% select(有課外活動,性別,權重)
+
+freshmen4 %>% 
+  ggplot(aes(x=有課外活動))+
+  geom_bar(aes(fill=性別,weight=權重),
+           position = "dodge",
+           stat 
+           ) 
+```
+
+```{r}
+freshmen4 %>% 
+  ggplot(aes(x=有課外活動))+
+  geom_bar(aes(fill=性別),
+           position = "dodge") 
+```
+
+### 轉軸
+```{r}
+#留意金融保險業的相對位置
+p4+coord_flip()
+```
+
+```{r}
+p4+
+  scale_y_continuous(position = "right")->p5
+p5
+```
+
+```{r}
+#留意金融保險業的相對位置和上面的不同。現在他在最上面
+p5+scale_x_discrete(
+  limits=rev(xlim) # xlim為先前定義的順序
+)+coord_flip()
+```
+
+```{r}
+startSalarySecCat %>% 
+  ggplot(aes(x=大職業別))+
+  theme(
+    axis.text.x=
+      element_text(
+        angle=90,
+        hjust=1,
+        vjust=0.5))-> p5base
+```
+
+
+```{r}
+p5base + 
+  geom_col( #基本長條圖含寬度設定
+    aes(y=`經常性薪資-薪資`,fill=部門),
+    width=0.8
+    )+
+  scale_y_continuous( #去除長條底部留白，並將軸線置右
+    expand=expand_scale(mult = c(0,0.10)),
+    position="right" 
+    )+
+  scale_x_discrete(limit=rev(xlim))+ #x分類排序
+  theme(axis.text=element_text(size=7))+ #縮小軸線標示文字字體
+  coord_flip()+ #翻轉兩軸
+  labs(x=NULL,y=NULL,fill=NULL)+ #去除mapping標題
+  theme(axis.text.x = #數字調整水平置中 #coord_flip之後的軸用**視覺上的軸**來定義x/y
+          element_text(
+            angle=0,
+            hjust=0.5))-> p9
+p9
+```
+
