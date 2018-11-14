@@ -8,9 +8,9 @@ output: html_document
 > 長條圖，不等於直方圖
 > 長條圖，就是有“面積比較”的心理，然後記得留意呈現方式（堆疊、分開、百分比堆疊），以及選色
 
-```{r}
+```{r 環境設定}
 library(showtext)
-# font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+# font_add("QYuan","Arial.ttf") # 新增字體
 showtext_auto(enable=TRUE) #啟用字體
 
 library(stringr)
