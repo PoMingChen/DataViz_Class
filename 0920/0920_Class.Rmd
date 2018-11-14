@@ -1,5 +1,5 @@
 ---
-title: "0920_Class"
+title: "0920_Class，CH3 over"
 output: html_notebook
 ---
 
@@ -39,23 +39,30 @@ subsetDataTWbank <- subsetData %>%
 ```
 
 Time: frequency and span (針對時間，需要特別跟電腦parse，詮釋，不可以用字串)
+> 可用“weeks”,“quarters”來產生週、季資料。可用by=“1 day”, by=“7 days”, by=“1 month”, by=“3 months”等來產生各種資料頻率。
+
 ```{r}
 library(dplyr)
+
+subsetDataTWbank
 
 #我打算再加一個變數。
 #seq(起於,迄於...) 是一個萬用數列產生器，那用as.Date來表達（日期）的特質。
 #變數類型為date
 subsetDataTWbank$西元年月<-seq(as.Date("2001/01/01"),as.Date("2018/08/01"),"months") 
 #季，quarters
+
+subsetDataTWbank
 ```
 
 ```{r}
+library(dplyr)
 subsetDataTWbank[,c(3,4,5)] %>% 
   mutate_all(as.numeric) -> 
   subsetDataTWbank[,c(3,4,5)]
 ```
 
-> 研究一下write csv這個可以幹嗎? 存檔
+> 研究一下write csv這個可以幹嗎? 答：存檔
 
 ```{r}
 write.csv(subsetDataTWbank, file="./subsetDataTWbank.csv")
@@ -124,8 +131,8 @@ HW1dataSheet
 
 ```{r}
 library(dplyr)
-HW1dataSheet %>% ggplot(aes(x=季資料,y=A...經常帳)) +       geom_line()+
-  theme(text=element_text(size=10,  family="QYuan"))+
+HW1dataSheet %>% ggplot(aes(x=季資料,y=A...經常帳)) + geom_line()+
+  theme(text=element_text(size=10,  family="QYuan")) +
   theme_classic()+
   labs(x="西元年月",y="經常帳：百萬美元") 
 ```
