@@ -9,4 +9,15 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(showtext)
+font_add("QYuan","Arial.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(readr)
+theme_set(theme_classic())
+```
 
