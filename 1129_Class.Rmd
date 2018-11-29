@@ -1,0 +1,239 @@
+---
+title: "1129_Class"
+author: "PoMingChen"
+date: "2018/11/29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(showtext)
+font_add("QYuan","Arial.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(readr)
+theme_set(theme_classic())
+```
+
+
+```{r}
+x<-c(0.1, 2.3, 1.1, 2.5)
+```
+
+```{r}
+xbinned <- c("[0.1,1.3]","(1.3,2.5]","[0.1,1.3]","(1.3,2.5")
+xbinned
+```
+
+```{r}
+diamonds$carat %>% range
+```
+
+```{r}
+#bins (default: 30)：要將連續x資料range分成「多少個」等距的桶子(bins)
+#切成30個小格子
+exDataTWpost90s %>% 
+  ggplot(aes(x=月升值率))+
+  geom_histogram() -> p3
+p3
+```
+
+```{r}
+#bin = 50
+#bins數越多，分配會有什麼變化現象？波動度感覺會更明顯。
+#原則上「樣本越大」、「資料越集中」則bin數目越多。有不少決定bins或binwidth的公式，大致上大同小異。這裡我們使用grDevices::nclass.FD(), 依Freedman-Diaconis法則選bins數。
+
+exDataTWpost90s %>% 
+  ggplot(aes(x=月升值率))+
+  geom_histogram(bins=50) -> p4
+p4
+```
+
+```{r}
+#統計上FD_Method會是去證明他符合真實的母體分配的一致性。
+binsNumber<- grDevices::nclass.FD(exDataTWpost90s$月升值率)
+exDataTWpost90s %>% 
+  ggplot(aes(x=月升值率))+
+  geom_histogram(bins=binsNumber) -> p5
+p5
+
+#binsNumber = 13 is the suitable bins.
+```
+
+```{r}
+exDataTWpost90s %>% 
+  ggplot(aes(x=月升值率))+
+  geom_histogram(
+    aes(fill=ordered(月份)),
+    bins=binsNumber) -> p6
+p6
+```
+
+```{r}
+exData7 %>%
+  filter(年份 %>% between(1990,2018)) %>%
+  na.omit ->
+  exData8
+
+exData8
+```
+
+```{r}
+exData8 %>% filter(幣別=="新台幣NTD/USD") %>%
+{grDevices::nclass.FD(.$月升值率)} -> binsNumber2
+
+exData8 %>%
+  ggplot(aes(x=月升值率))+
+  geom_freqpoly(
+    aes(color=幣別),
+    bins=binsNumber2
+  ) -> p7
+p7
+```
+
+```{r}
+#如何將月升值率限制在-0.15到0.15間？
+p7+
+  scale_x_continuous(
+    limits = c(-0.15,0.15)
+  )
+```
+
+```{r}
+exData8 %>% group_by(幣別) %>%
+  mutate(權重=1/n()) %>%
+  ungroup -> exData9
+
+exData9 %>%
+  ggplot(aes(x=月升值率))+
+  geom_freqpoly(
+    aes(color=幣別,weight=權重),
+    bins=binsNumber2
+  ) -> p8
+p8
+```
+
+#### 9.5.4 間斷變數與geom_freqpoly
+
+間斷變數在做跨類分配比較時，有時用geom_freqpoly()比較能看出各中差異，然而它內定的stat="bin"必需改成間斷變數的stat="count"。
+
+> 線相較於histogram，線彼此之間是暗示前後有關聯的。
+
+```{r}
+library(readr)
+library(dplyr)
+library(lubridate)
+libraryData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/libraryData.csv")
+
+libraryData %>%
+  mutate(
+    月=month(借閱時間)
+  ) %>% 
+  select(
+    月,讀者年級
+  ) -> monthGrades
+
+monthGrades
+```
+
+```{r}
+monthGrades %>%
+  ggplot(aes(x=月))+
+  geom_bar(aes(fill=as.factor(讀者年級),
+               group=讀者年級),position="dodge")+
+  scale_x_continuous(
+    breaks=c(1:12)
+  )
+```
+
+```{r}
+monthGrades %>%
+  ggplot(aes(x=月))+
+  geom_freqpoly(aes(color=as.factor(讀者年級)),stat="count")+
+  scale_x_continuous(
+    breaks=c(1:12)
+  )
+```
+
+### 9.6 箱形圖
+
+原始分配圖，基本上是起手式，目的是看有沒有特定的趨勢，作為分析的參考。若沒有的話，建議畫箱形圖會比較好，因為峰態以及離群的訊息傳遞更加，更聚焦。反之，若原始分配圖有想要特別分析的東西，就要show出來，並且說故事。
+
+
+#### p.9 範例
+```{r}
+libraryData %>%
+  group_by(學號,讀者年級) %>%
+  summarise(
+    借閱次=n(),
+    學院=first(學院)
+  ) -> libraryEachGrade
+
+libraryEachGrade
+
+```
+
+```{r}
+libraryEachGrade %>% group_by(讀者年級) %>%
+  mutate(權重=1/n()) -> libraryEachGrade
+
+libraryEachGrade %>% group_by(讀者年級) %>%
+  summarise(
+    binsNumber=grDevices::nclass.FD(借閱次)
+  )
+```
+
+```{r}
+libraryEachGrade %>%  
+  ggplot(aes(x=借閱次))+
+  geom_freqpoly(aes(color=as.factor(讀者年級),weight=權重),bins=50)
+```
+
+```{r}
+libraryEachGrade %>%
+  ggplot(aes(x=as.factor(讀者年級)))+
+  geom_boxplot(aes(y=借閱次))->p9
+
+p9
+```
+
+#### p.10 設定y limits
+```{r}
+p9+
+  scale_y_continuous(limits=c(0,10)) -> p10
+
+p10
+```
+
+#### p11: 不同學院
+```{r}
+libraryEachGrade %>%
+  ggplot(aes(x=as.factor(讀者年級)))+
+  geom_boxplot(aes(y=借閱次,color=學院))-> p11; p11
+```
+
+### 9.7 多格圖面呈現：facet_grid() 與 facet_wrap()
+```{r}
+libraryEachGrade %>%
+  ggplot(aes(x=as.factor(讀者年級)))+
+  geom_boxplot(aes(y=借閱次))+
+  facet_grid(~學院)
+```
+
+```{r}
+libraryEachGrade %>%
+  ggplot(aes(x=as.factor(讀者年級)))+
+  geom_boxplot(aes(y=借閱次))+
+  facet_wrap(~學院,nrow=2,ncol=3)+ 
+  scale_y_continuous(limits=c(0,10))
+
+# facet_wrap(~學院,nrow=2,ncol=3)
+# Column > 4者，就會斷行。到第二個row，但是facet_grid不會斷，維持1*6，就會比較長
+```
+
