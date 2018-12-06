@@ -1,0 +1,70 @@
+---
+title: "12/6 Class"
+author: "PoMingChen"
+date: "2018/12/6"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Review網頁的tag，`<img>`，`<svg>`，前者是靜態的，後者是以要保留資料完整性（包含精準值）與視覺化做出一個盡可能地平衡，是有一個最大最廣泛的規格，也因此有了那個規格後，網頁爬蟲以及繪圖規格的一致性才變得確立。
+
+但是要用plotly，需要ggplot2以外的一些東西。
+
+```{r}
+library(showtext)
+font_add("QYuan","Arial.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(readr)
+theme_set(theme_classic())
+```
+
+```{r}
+library(ggplot2)
+library(readr)
+library(dplyr)
+library(lubridate)
+libraryData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/libraryData.csv")
+libraryData %>%
+  mutate(
+    月=month(借閱時間)
+  ) %>% 
+  select(
+    月,讀者年級
+  ) -> monthGrades
+
+monthGrades %>%
+  ggplot(aes(x=月))+
+  geom_freqpoly(aes(color=as.factor(讀者年級)),stat="count")+
+  scale_x_continuous(
+    breaks=c(1:12)
+  )-> gg1
+gg1
+```
+
+```{r}
+library(plotly)
+gg1 %>% ggplotly -> gp1
+gp1
+```
+
+```{r}
+#~代表mapping
+library(plotly)
+p <- plot_ly(midwest, x = ~percollege, color = ~state, type = "box")
+p 
+```
+
+所有的gp1，plotly產生的圖，很多元素（或者說所有元素）都是一個list底下的元素。因此你可以直接針對他做改變。
+```{r}
+gp1[["x"]][["layout"]][["plot_bgcolor"]] <- "green"
+gp1
+
+```
+
