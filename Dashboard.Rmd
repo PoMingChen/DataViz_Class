@@ -1,0 +1,79 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+```{r}
+library(plotly)
+layout(
+  api_download_plot("20","PoMingChen"),
+  title = sprintf("臺北大學各系男女生比例", "https://plot.ly/~PoMingChen/20")
+) -> gpOthers
+```
+
+
+
+Column {data-witdth=150}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+# > {data-height=xxx} {data-width=xxx} 是相對的。100/200 = 10/20
+# 這邊的狀況是350/650;300/650
+gpOthers
+```
+
+Column {data-witdth=350}
+-----------------------------------------------------------------------
+
+
+### Chart B
+
+```{r}
+#上面的.tabst，哪個點就是CSS相同概念
+```
+
+限制寬高。但若是自己在R裡面寫的程式碼就會有自動縮放功能
+```{r}
+library(plotly)
+api_download_plot("551","Dreamshot") -> .plotly
+.plotly[["x"]][["layout"]][["autosize"]]<-T #允許autoresize
+.plotly[["x"]][["layout"]][["height"]]<-c() # 取消限高
+.plotly[["x"]][["layout"]][["width"]]<-c() # 取消限寛
+.plotly-> Dreamshot
+
+Dreamshot
+```
+
+自己寫一個常用的函數
+```{r}
+flex_plotly<-function(.plotly){
+  .plotly[["x"]][["layout"]][["autosize"]]<-T
+  .plotly[["x"]][["layout"]][["height"]]<-c()
+  .plotly[["x"]][["layout"]][["width"]]<-c()
+  .plotly
+}
+```
+
+```{r}
+api_download_plot("290","PatrickMerlot") %>%
+  flex_plotly -> plotly2
+```
+
+-----------------------------------------------------------------------
+
+### Chart C 
+
+```{r}
+api_download_plot("203","cimar") %>%
+  flex_plotly -> plotly3
+plotly3
+```

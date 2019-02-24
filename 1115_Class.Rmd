@@ -1,0 +1,81 @@
+---
+title: "1115_Class"
+author: "PoMingChen"
+date: "2018/11/15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+exData7 <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/exData7.csv")
+```
+
+```{r}
+exData7 %>%
+  mutate(
+    升值=(月升值率>0)
+  ) %>%
+  filter(幣別=="新台幣NTD/USD",年份 %>% between(1990,1995)) -> exDataTWpost90s
+
+exDataTWpost90s
+```
+
+```{r}
+exDataTWpost90s %>%
+  ggplot(aes(x=年份)) +
+  geom_bar(aes(weight=升值)) + #the sum of weights(基本上就是T/F，轉為0,1相加。)
+  geom_hline(yintercept=6,color="red") -> p1
+
+p1
+```
+
+```{r}
+p1+
+  scale_y_continuous(
+    limits=c(0,13),
+    breaks=c(0,2,4,6,8,10,12)
+  ) -> p1
+p1
+```
+
+#### 練習題
+> 要突顯不同年份升/貶值次數「相對」多寡，你有比較好的想法嗎？ 
+
+```{r}
+exDataTWpost90s %>%
+  mutate(
+    升值=as.factor(升值)
+  ) -> exDataTWpost90s
+exDataTWpost90s %>%
+  mutate(
+    升值=ordered(升值,levels=c("FALSE","TRUE"))
+  ) ->
+  exDataTWpost90s
+
+exDataTWpost90s
+```
+
+```{r}
+exDataTWpost90s %>%
+  ggplot(aes(x=年份)) +
+  geom_bar(aes(fill=ordered(升值))) -> p2
+p2
+```
+
+```{r}
+p2 +
+  scale_fill_manual(
+    labels=c("貶值","升值"),
+    values=c("#ccd8e5","#ffa500")
+  )+
+  labs(fill=NULL)+
+  geom_hline(yintercept=6, color="red",alpha=0.3)+
+  scale_y_continuous(
+    limits=c(0,13),
+    breaks=c(0,2,4,6,8,10,12)
+  )
+```
+

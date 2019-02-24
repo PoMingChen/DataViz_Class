@@ -1,0 +1,22 @@
+---
+title: "1227_Class"
+author: "PoMingChen"
+date: "2018/12/27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(plotly)
+api_download_plot("551","Dreamshot") -> .plotly
+.plotly[["x"]][["layout"]][["autosize"]]<-T #允許autoresize
+.plotly[["x"]][["layout"]][["height"]]<-c() # 取消限高
+.plotly[["x"]][["layout"]][["width"]]<-c() # 取消限寛
+.plotly-> Dreamshot
+
+Dreamshot
+```
+

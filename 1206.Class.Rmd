@@ -68,3 +68,61 @@ gp1
 
 ```
 
+```{r}
+平均溫度<- c("16.1",    "16.5", "18.5", "21.9", "25.2", "27.7", "29.6", "29.2", "27.4", "24.5", "21.5", "17.9", "23")
+
+gp1$x$data[[1]]$text<-平均溫度
+gp1
+```
+
+```{r}
+libraryData %>%
+  mutate(
+    月=month(借閱時間)
+  ) %>% 
+  group_by(讀者年級,月) %>%
+  summarise(
+    讀者數=n_distinct(學號)
+  ) -> readerEachGrade
+readerEachGrade %>%
+  filter(讀者年級==2) -> trace2Data
+trace2Data$讀者數 %>% as.character -> trace2ReaderNumbers
+paste0("人數:",trace2ReaderNumbers,"<br>","溫度:",平均溫度)-> hoverinfo2
+hoverinfo2
+```
+
+```{r}
+gp1$x$data[[2]]$text <- hoverinfo2
+gp1
+```
+
+```{r}
+gp1 %>% style(hoverinfo="none",traces = 3:4)
+```
+
+### 其他酷炫效果
+```{r}
+plot_ly(x = time(USAccDeaths), y = USAccDeaths) %>% 
+  add_lines() %>%
+  rangeslider()
+```
+
+```{r}
+install.packages("gapminder")
+data(gapminder, package = "gapminder")
+gg <- ggplot(gapminder, aes(gdpPercap, lifeExp, color = continent)) +
+  geom_point(aes(size = pop, frame = year, ids = country)) +
+  scale_x_log10()
+ggplotly(gg)
+```
+
+## 如果我有好幾張資訊圖表版，要怎麼排版
+
+```{r}
+install.packages("flexdashboard")
+```
+
+```{r}
+
+```
+
